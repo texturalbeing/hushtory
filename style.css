@@ -92,7 +92,7 @@ h2 {
     margin-top: 15px;
     padding: 12px 30px;
     font-size: 1.1em;
-    background: #3498db;
+    background: #d4a5a5;
     color: white;
     border: none;
     border-radius: 8px;
@@ -102,7 +102,7 @@ h2 {
 }
 
 .save-btn:hover {
-    background: #2980b9;
+    background: #c08f8f;
 }
 
 .save-btn:active {
@@ -154,7 +154,7 @@ h2 {
     margin-top: 10px;
     padding: 6px 15px;
     font-size: 0.9em;
-    background: #e74c3c;
+    background: #3498db;
     color: white;
     border: none;
     border-radius: 5px;
@@ -163,7 +163,7 @@ h2 {
 }
 
 .delete-btn:hover {
-    background: #c0392b;
+    background: #2980b9;
 }
 
 /* Responsive */
