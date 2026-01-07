@@ -47,9 +47,11 @@ function resetTextarea() {
 
 I'm writing from the perspective of unconditional Love...
 
+Write the note from Love here.
+
 Infinitely yours,
 L🩷ve`;
-const placeholderText = 'Write the note from Love here.';
+    const placeholderText = 'Write the note from Love here.';
     const startPos = letterInput.value.indexOf(placeholderText);
     const endPos = startPos + placeholderText.length;
     letterInput.setSelectionRange(startPos, endPos);
