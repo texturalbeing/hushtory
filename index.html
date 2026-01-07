@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letters from Love - Hushtory</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Letters from Love</h1>
+            <p class="subtitle">A daily practice of writing to yourself from the perspective of Love</p>
+        </header>
+
+        <main>
+            <section class="write-section">
+                <h2>Write Today's Letter</h2>
+                <textarea
+                    id="letterInput"
+                    placeholder="Dear beloved one,&#10;&#10;Write to yourself from the perspective of unconditional Love...&#10;&#10;With infinite love,&#10;Love"
+                    rows="12"
+                ></textarea>
+                <button id="saveBtn" class="save-btn">Save Letter</button>
+            </section>
+
+            <section class="letters-section">
+                <h2>Past Letters</h2>
+                <div id="lettersList" class="letters-list">
+                    <p class="empty-state">No letters yet. Write your first letter above!</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
