@@ -4,7 +4,10 @@ const saveBtn = document.getElementById('saveBtn');
 const lettersList = document.getElementById('lettersList');
 
 // Load letters when page loads
-document.addEventListener('DOMContentLoaded', loadLetters);
+document.addEventListener('DOMContentLoaded', () => {
+    loadLetters();
+    initializeTextarea();
+});
 
 // Save button click
 saveBtn.addEventListener('click', saveLetter);
@@ -15,6 +18,43 @@ letterInput.addEventListener('keydown', (e) => {
         saveLetter();
     }
 });
+
+// Initialize textarea with greeting and closing
+function initializeTextarea() {
+    const placeholderText = 'Write the note from Love here.';
+
+    // Focus on the textarea when clicked and select the placeholder text
+    letterInput.addEventListener('focus', function() {
+        if (this.value.includes(placeholderText)) {
+            const startPos = this.value.indexOf(placeholderText);
+            const endPos = startPos + placeholderText.length;
+            this.setSelectionRange(startPos, endPos);
+        }
+    });
+
+    // Position cursor at the placeholder text on load
+    const text = letterInput.value;
+    if (text.includes(placeholderText)) {
+        const startPos = text.indexOf(placeholderText);
+        const endPos = startPos + placeholderText.length;
+        letterInput.setSelectionRange(startPos, endPos);
+    }
+}
+
+// Reset textarea to initial state
+function resetTextarea() {
+    letterInput.value = `Dear Jo,
+
+Write the note from Love here.
+
+Infinitely yours,
+L🩷ve`;
+    const placeholderText = 'Write the note from Love here.';
+    const startPos = letterInput.value.indexOf(placeholderText);
+    const endPos = startPos + placeholderText.length;
+    letterInput.setSelectionRange(startPos, endPos);
+    letterInput.focus();
+}
 
 function saveLetter() {
     const content = letterInput.value.trim();
@@ -40,8 +80,8 @@ function saveLetter() {
     // Save to localStorage
     localStorage.setItem('lettersFromLove', JSON.stringify(letters));
 
-    // Clear input
-    letterInput.value = '';
+    // Reset textarea to initial state
+    resetTextarea();
 
     // Reload display
     loadLetters();
@@ -112,7 +152,7 @@ function showConfirmation() {
 
     setTimeout(() => {
         saveBtn.textContent = originalText;
-        saveBtn.style.background = '#3498db';
+        saveBtn.style.background = '#d4a5a5';
     }, 2000);
 }
 
