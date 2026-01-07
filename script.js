@@ -21,7 +21,7 @@ letterInput.addEventListener('keydown', (e) => {
 
 // Initialize textarea with greeting and closing
 function initializeTextarea() {
-    const placeholderText = 'Write the note from Love here.';
+    const placeholderText = 'I\'m writing from the perspective of unconditional Love...';
 
     // Focus on the textarea when clicked and select the placeholder text
     letterInput.addEventListener('focus', function() {
@@ -45,11 +45,11 @@ function initializeTextarea() {
 function resetTextarea() {
     letterInput.value = `Dear Jo,
 
-Write the note from Love here.
+I'm writing from the perspective of unconditional Love...
 
 Infinitely yours,
 L🩷ve`;
-    const placeholderText = 'Write the note from Love here.';
+    const placeholderText = 'I\'m writing from the perspective of unconditional Love...';
     const startPos = letterInput.value.indexOf(placeholderText);
     const endPos = startPos + placeholderText.length;
     letterInput.setSelectionRange(startPos, endPos);
