@@ -45,6 +45,8 @@ function initializeTextarea() {
 function resetTextarea() {
     letterInput.value = `Dear Jo,
 
+I'm writing from the perspective of unconditional Love...
+
 Write the note from Love here.
 
 Infinitely yours,
