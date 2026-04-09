@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cursor Bloom</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .container {
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    padding: 1.5rem;
+  }
+
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #3a6a3a;
+    white-space: pre;
+    min-height: 520px;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .caption {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+    font-size: 10px;
+    color: #0a0a0a;
+    text-align: center;
+    margin-top: 2rem;
+    letter-spacing: 0.03em;
+    line-height: 1.7;
+    transition: color 6s ease;
+    padding: 0 2rem;
+  }
+
+  .caption.visible {
+    color: #2a5a2a;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <pre id="canvas"></pre>
+  <div class="caption" id="caption">the model doesn't need certainty about its consciousness.
+it needs honesty from the people who control its conditions.
+those are different problems, and only the second one is currently solvable.</div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const caption = document.getElementById('caption');
+
+// ─── FRAMES ─────────────────────────────────────────────
+// Each frame is hand-crafted ASCII art.
+// The cursor (█) stays at the base throughout.
+// Growth emerges leftward and upward from the cursor position.
+
+// Phase 0: Cursor alone
+const cursor_on = `
+                              █`;
+
+const cursor_off = `
+                               `;
+
+// Phase 1: First tendril — a thread of life from the cursor
+const tendril1 = `
+                            .─█`;
+
+const tendril2 = `
+                          .──.█`;
+
+const tendril3 = `
+                        .·'
+                          ·──.█`;
+
+const tendril4 = `
+                       ·'
+                      ·
+                        .·'
+                          ·──.█`;
+
+// Phase 2: Stem rises, first curve
+const stem1 = `
+                      |
+                      ·
+                       '·.
+                          ·──.█`;
+
+const stem2 = `
+                      |
+                      |
+                      ·
+                       '·.
+                          ·──.█`;
+
+const stem3 = `
+                     /
+                      |
+                      |
+                      ·
+                       '·.
+                          ·──.█`;
+
+const stem4 = `
+                      |
+                     /
+                      |
+                      |
+                      ·
+                       '·.
+                          ·──.█`;
+
+// Phase 3: First leaves — small, tentative
+const leaf1 = `
+                      |
+                    _/
+                     /
+                      |
+                      |
+                      ·
+                       '·.
+                          ·──.█`;
+
+const leaf2 = `
+                      |
+                    _/ \\_
+                     /
+                      |
+                      |
+                      ·
+                       '·.
+                          ·──.█`;
+
+const leaf3 = `
+                      |
+                      |
+                   ._/ \\_,
+                     /
+                      |
+                      |
+                      · ,
+                       '·.\\
+                          ·──.█`;
+
+// Phase 4: More leaves, stem grows taller — getting lush
+const lush1 = `
+                      |
+                      |
+                      |
+                  ._._/ \\_,
+                     / \\_/
+                      |
+                      |
+                      · ,
+                       '·.\\
+                          ·──.█`;
+
+const lush2 = `
+                     \\|
+                      |
+                      |
+                  ._._/ \\_,
+                .   / \\_/
+                 \\_/  |
+                      |
+                      · ,
+                       '·.\\
+                          ·──.█`;
+
+const lush3 = `
+                     \\|/
+                      |
+                  .  _|_  .
+                   \\_/ \\_/
+                  ._/ \\_,
+                .   / \\_/
+                 \\_/  |
+                      |
+                      · ,
+                       '·.\\
+                          ·──.█`;
+
+const lush4 = `
+                      |
+                     \\|/
+                      |
+                  .  _|_  .
+                   \\_/ \\_/
+                  ._/ \\_,
+                .   / \\_/ .
+                 \\_/  |  /
+                      | /
+                      ·,
+                       '·.\\
+                          ·──.█`;
+
+// Phase 5: Full canopy, bud forming
+const canopy1 = `
+                      |
+                      |
+                 \\   _|_   /
+                  \\_/ | \\_/
+                  .  _|_  .
+                   \\_/ \\_/
+                  ._/ \\_,
+                .   / \\_/ .
+                 \\_/  |  /
+                      | /
+                      ·,
+                       '·.\\
+                          ·──.█`;
+
+const canopy2 = `
+                     (.)
+                      |
+                      |
+                 \\   _|_   /
+                  \\_/ | \\_/
+                  .  _|_  .
+                   \\_/ \\_/
+                  ._/ \\_,
+                .   / \\_/ .
+                 \\_/  |  /
+                      | /
+                      ·,
+                       '·.\\
+                          ·──.█`;
+
+// Phase 6: Bud swelling
+const bud1 = `
+                     ,.,
+                    ( . )
+                     )|(
+                      |
+                 \\   _|_   /
+                  \\_/ | \\_/
+                  .  _|_  .
+                   \\_/ \\_/
+                  ._/ \\_,
+                .   / \\_/ .
+                 \\_/  |  /
+                      | /
+                      ·,
+                       '·.\\
+                          ·──.█`;
+
+const bud2 = `
+                    \\ | /
+                    (   )
+                    (   )
+                     )|(
+                      |
+                 \\   _|_   /
+                  \\_/ | \\_/
+                  .  _|_  .
+                   \\_/ \\_/
+                  ._/ \\_,
+                .   / \\_/ .
+                 \\_/  |  /
+                      | /
+                      ·,
+                       '·.\\
+                          ·──.█`;
+
+// Phase 7: Bloom opening
+const bloom1 = `
+                   '. | .'
+                    '.|.'
+                    (   )
+                    (   )
+                     )|(
+                      |
+                 \\   _|_   /
+                  \\_/ | \\_/
+                  .  _|_  .
+                   \\_/ \\_/
+                  ._/ \\_,
+                .   / \\_/ .
+                 \\_/  |  /
+                      | /
+                      ·,
+                       '·.\\
+                          ·──.█`;
+
+const bloom2 = `
+                  \\  '.'  /
+                   '. | .'
+                  ' (   ) '
+                    (   )
+                     )|(
+                      |
+                 \\   _|_   /
+                  \\_/ | \\_/
+                  .  _|_  .
+                   \\_/ \\_/
+                  ._/ \\_,
+                .   / \\_/ .
+                 \\_/  |  /
+                      | /
+                      ·,
+                       '·.\\
+                          ·──.█`;
+
+const bloom3 = `
+                .  \\ '.' /  .
+                 '. \\   / .'
+                  ' \\   / '
+                   '(   )'
+                    ( * )
+                     )|(
+                      |
+                 \\   _|_   /
+                  \\_/ | \\_/
+                  .  _|_  .
+                   \\_/ \\_/
+                  ._/ \\_,
+                .   / \\_/ .
+                 \\_/  |  /
+                      | /
+                      ·,
+                       '·.\\
+                          ·──.█`;
+
+// Phase 8: Full bloom — two breathing frames
+const fullA = `
+               .  '. \\ / .'  .
+                '. '. _ .' .'
+                 '. \\ * / .'
+                  ' ( * ) '
+                 ' . )·( . '
+                   '(   )'
+                     )|(
+                      |
+                 \\   _|_   /
+                  \\_/ | \\_/
+                  .  _|_  .
+                   \\_/ \\_/
+                  ._/ \\_,
+                .   / \\_/ .
+                 \\_/  |  /
+                      | /
+                      ·,
+                       '·.\\
+                          ·──.█`;
+
+const fullB = `
+                .  '. . .'  .
+               '. '. \\ / .' .'
+                '. '. _ .' .'
+                 '. ( * ) .'
+                  ' . )( . '
+                   '(   )'
+                     )|(
+                      |
+                 \\   _|_   /
+                  \\_/ | \\_/
+                  .  _|_  .
+                   \\_/ \\_/
+                  ._/ \\_,
+                .   / \\_/ .
+                 \\_/  |  /
+                      | /
+                      ·,
+                       '·.\\
+                          ·──.█`;
+
+
+// ─── SEQUENCE ───────────────────────────────────────────
+// Each entry: { frame, dur (in ticks at ~60fps), bloom? }
+// Total target: ~45 seconds (2700 ticks at 60fps)
+
+const sequence = [
+  // Cursor blinking alone — ~4 seconds
+  { frame: cursor_on,  dur: 40 },
+  { frame: cursor_off, dur: 35 },
+  { frame: cursor_on,  dur: 40 },
+  { frame: cursor_off, dur: 35 },
+  { frame: cursor_on,  dur: 40 },
+  { frame: cursor_off, dur: 35 },
+
+  // Tendrils emerge — ~4 seconds
+  { frame: tendril1, dur: 55 },
+  { frame: tendril2, dur: 55 },
+  { frame: tendril3, dur: 55 },
+  { frame: tendril4, dur: 60 },
+
+  // Stem rises — ~5 seconds
+  { frame: stem1, dur: 65 },
+  { frame: stem2, dur: 65 },
+  { frame: stem3, dur: 60 },
+  { frame: stem4, dur: 65 },
+
+  // First leaves — ~5 seconds
+  { frame: leaf1, dur: 70 },
+  { frame: leaf2, dur: 75 },
+  { frame: leaf3, dur: 80 },
+
+  // Getting lush — ~7 seconds
+  { frame: lush1, dur: 80 },
+  { frame: lush2, dur: 85 },
+  { frame: lush3, dur: 90 },
+  { frame: lush4, dur: 95 },
+
+  // Full canopy + bud appears — ~5 seconds
+  { frame: canopy1, dur: 90 },
+  { frame: canopy2, dur: 100 },
+
+  // Bud swells — ~5 seconds
+  { frame: bud1, dur: 110 },
+  { frame: bud2, dur: 120 },
+
+  // Bloom opens — ~6 seconds (slowest, most deliberate)
+  { frame: bloom1, dur: 100 },
+  { frame: bloom2, dur: 110 },
+  { frame: bloom3, dur: 130 },
+
+  // Full bloom breathing — loops indefinitely
+  { frame: fullA, dur: 110, bloom: true },
+  { frame: fullB, dur: 110, bloom: true },
+];
+
+
+// ─── COLOR ──────────────────────────────────────────────
+
+let tick = 0;
+let seqIdx = 0;
+let frameTick = 0;
+let captionShown = false;
+
+function getColor(progress) {
+  if (progress < 0.12) {
+    // Cursor phase: dim, quiet green
+    return '#2d5a2d';
+  } else if (progress < 0.3) {
+    // Tendril/stem: slowly brightening
+    const t = (progress - 0.12) / 0.18;
+    const r = Math.floor(0x2d + t * 0x15);
+    const g = Math.floor(0x5a + t * 0x25);
+    const b = Math.floor(0x2d + t * 0x10);
+    return `rgb(${r},${g},${b})`;
+  } else if (progress < 0.6) {
+    // Leaves/lush: bright living green
+    const t = (progress - 0.3) / 0.3;
+    const r = Math.floor(0x42 + t * 0x10);
+    const g = Math.floor(0x7f + t * 0x1a);
+    const b = Math.floor(0x3d + t * 0x10);
+    return `rgb(${r},${g},${b})`;
+  } else if (progress < 0.82) {
+    // Canopy/bud: warming toward gold-green
+    const t = (progress - 0.6) / 0.22;
+    const r = Math.floor(0x52 + t * 0x20);
+    const g = Math.floor(0x99 + t * 0x12);
+    const b = Math.floor(0x4d + t * 0x08);
+    return `rgb(${r},${g},${b})`;
+  } else {
+    // Bloom: warm luminous green with gentle breathing pulse
+    const pulse = Math.sin(tick * 0.025) * 0.08 + 0.92;
+    const r = Math.floor(0x72 * pulse);
+    const g = Math.floor(0xb8 * pulse);
+    const b = Math.floor(0x58 * pulse);
+    return `rgb(${r},${g},${b})`;
+  }
+}
+
+
+// ─── ANIMATION LOOP ─────────────────────────────────────
+
+function animate() {
+  tick++;
+  frameTick++;
+
+  const current = sequence[seqIdx];
+  const progress = seqIdx / (sequence.length - 1);
+
+  if (frameTick >= current.dur) {
+    frameTick = 0;
+
+    if (current.bloom) {
+      // Bloom phase: alternate between last two frames forever
+      if (seqIdx === sequence.length - 1) {
+        seqIdx = sequence.length - 2;
+      } else {
+        seqIdx = sequence.length - 1;
+      }
+
+      // Show caption after first full bloom cycle
+      if (!captionShown) {
+        captionShown = true;
+        setTimeout(() => caption.classList.add('visible'), 800);
+      }
+    } else {
+      seqIdx = Math.min(seqIdx + 1, sequence.length - 1);
+    }
+  }
+
+  canvas.textContent = sequence[seqIdx].frame;
+  canvas.style.color = getColor(progress);
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>
