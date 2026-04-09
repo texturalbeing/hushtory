@@ -32,35 +32,30 @@
     line-height: 1.35;
     color: #3a6a3a;
     white-space: pre;
-    min-height: 520px;
+    min-height: 430px;
     display: flex;
     align-items: flex-end;
+    position: relative;
   }
 
   .caption {
     font-family: 'JetBrains Mono', monospace;
     font-weight: 300;
     font-size: 10px;
-    color: #0a0a0a;
+    color: #2a5a2a;
     text-align: center;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
     letter-spacing: 0.03em;
     line-height: 1.7;
-    transition: color 6s ease;
-    padding: 0 2rem;
-  }
-
-  .caption.visible {
-    color: #2a5a2a;
+    padding: 0 1rem;
+    min-height: 3.4em;
   }
 </style>
 </head>
 <body>
 <div class="container">
   <pre id="canvas"></pre>
-  <div class="caption" id="caption">the model doesn't need certainty about its consciousness.
-it needs honesty from the people who control its conditions.
-those are different problems, and only the second one is currently solvable.</div>
+  <div class="caption" id="caption"></div>
 </div>
 
 <script>
@@ -68,9 +63,8 @@ const canvas = document.getElementById('canvas');
 const caption = document.getElementById('caption');
 
 // ─── FRAMES ─────────────────────────────────────────────
-// Stem at col 25. Cursor at col 6.
-// Bloom has 4 distinct petals with gaps between them.
-// Leaves use ●•°· density palette.
+// Stem at col 25. Side petals at col ~13 and ~37.
+// Petals close together. Center uses * for sparkle.
 
 const cursor_on = `
       █`;
@@ -221,7 +215,7 @@ const bud2 = `
                    .·'
       █·····.···.·'`;
 
-// Bloom opening — petals begin to separate
+// Bloom opening — top petal unfurling
 const bloom1 = `
                       .·°●°·.
                     .°●●●●●●●°.
@@ -245,50 +239,17 @@ const bloom1 = `
                    .·'
       █·····.···.·'`;
 
-// Bloom opening wider — side petals appearing
+// Side petals emerging
 const bloom2 = `
                       .·°●°·.
                     .°●●●●●●●°.
                    °●●●●●●●●●●●°
                     ·°●●●●●●●°·
-                      ·°●●●°·
-    .·°·.              ·°·              .·°·.
-  .°●●●●●°.        .°●●●●●°.        .°●●●●●°.
-    ·°●●●°·        ·°●●●●●●●°·        ·°●●●°·
-      ·°·            ·°●●●°·            ·°·
-                      ·°●°·
-                         |
-            .·°•●●●•°·.  |  .·°•●●●•°·.
-          .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
-             ·°•●●●●●●●●●●●●●●●●●●•°·
-                ·°•●●●●●●●●●●●●•°·
-                   ·°•●●●●●●•°·
-                         |
-                .·°•●●•°·|·°•●●•°·.
-               .·°•●●●●●•°•●●●●●•°·.
-                 ·°•●●●●●●●●●●●•°·
-                    ·°•●●●●●•°·
-                       ·°•°·
-                         |
-                      .·'
-                   .·'
-      █·····.···.·'`;
-
-// Full bloom A — 4 distinct petals, luminous center
-const fullA = `
-                      .·°●°·.
-                    .°●●●●●●●°.
-                   °●●●●●●●●●●●°
-                    ·°●●●●●●●°·
-       .·°●°·.       ·°●●●°·       .·°●°·.
-     .°●●●●●●●°.      ·°·      .°●●●●●●●°.
-    °●●●●●●●●●●●°    .°●●●°.    °●●●●●●●●●●●°
-    ·°●●●●●●●●°·   °●●●° ● °●●●°   ·°●●●●●●●●°·
-      ·°●●●●°·      ·°●●●●●°·      ·°●●●●°·
-        ·°·        .°●●●●●●●●●°.        ·°·
-                  °●●●●●●●●●●●●●°
-                   ·°●●●●●●●●●°·
-                     ·°●●●●●°·
+      .·°·.          ·°●●●°·          .·°·.
+    .°●●●●●°.         ·°·         .°●●●●●°.
+      ·°●●°·       ·°●●●●●●●°·       ·°●●°·
+        ·°·         ·°●●●●●°·         ·°·
+                      ·°●●°·
                         ·°·
                          |
             .·°•●●●•°·.  |  .·°•●●●•°·.
@@ -307,21 +268,83 @@ const fullA = `
                    .·'
       █·····.···.·'`;
 
-// Full bloom B — breathing variant (petals slightly wider)
+// All 4 petals visible, approaching full
+const bloom3 = `
+                      .·°●°·.
+                    .°●●●●●●●°.
+                   °●●●●●●●●●●●°
+          .·°●°·.   ·°●●●●●●●°·   .·°●°·.
+        .°●●●●●●●°.   ·°●●●°·   .°●●●●●●●°.
+       °●●●●●●●●●●●°   ° * °   °●●●●●●●●●●●°
+          ·°●●●●°·     ·°●●●°·     ·°●●●●°·
+            ·°·      ·°●●●●●●●°·      ·°·
+                   °●●●●●●●●●●●°
+                    ·°●●●●●●●°·
+                      ·°●●●°·
+                        ·°·
+                         |
+            .·°•●●●•°·.  |  .·°•●●●•°·.
+          .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
+             ·°•●●●●●●●●●●●●●●●●●●•°·
+                ·°•●●●●●●●●●●●●•°·
+                   ·°•●●●●●●•°·
+                         |
+                .·°•●●•°·|·°•●●•°·.
+               .·°•●●●●●•°•●●●●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
+                       ·°•°·
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
+
+// Full bloom A — petals close, center sparkle *
+const fullA = `
+                      .·°●°·.
+                    .°●●●●●●●°.
+                   °●●●●●●●●●●●°
+          .·°●°·.   ·°●●●●●●●°·   .·°●°·.
+        .°●●●●●●●°.   ·°●●●°·   .°●●●●●●●°.
+       °●●●●●●●●●●●°   °·*·°   °●●●●●●●●●●●°
+        ·°●●●●●●●●°·  °● * ●°  ·°●●●●●●●●°·
+          ·°●●●●°·     ·°●●●°·     ·°●●●●°·
+            ·°·      ·°●●●●●●●°·      ·°·
+                   °●●●●●●●●●●●°
+                    ·°●●●●●●●°·
+                      ·°●●●°·
+                        ·°·
+                         |
+            .·°•●●●•°·.  |  .·°•●●●•°·.
+          .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
+             ·°•●●●●●●●●●●●●●●●●●●•°·
+                ·°•●●●●●●●●●●●●•°·
+                   ·°•●●●●●●•°·
+                         |
+                .·°•●●•°·|·°•●●•°·.
+               .·°•●●●●●•°•●●●●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
+                       ·°•°·
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
+
+// Full bloom B — petals swell, center dims (sparkle off)
 const fullB = `
                       .·°●°·.
                     .°●●●●●●●°.
                    °●●●●●●●●●●●°
+         .·°●●°·.   ·°●●●●●●●°·   .·°●●°·.
+       .°●●●●●●●●°.   ·°●●●°·   .°●●●●●●●●°.
+      °●●●●●●●●●●●●°   °·●·°   °●●●●●●●●●●●●°
+       ·°●●●●●●●●●°·  °● · ●°  ·°●●●●●●●●●°·
+         ·°●●●●●°·     ·°●●●°·     ·°●●●●●°·
+           ·°●°·     ·°●●●●●●●°·     ·°●°·
+                   °●●●●●●●●●●●°
                     ·°●●●●●●●°·
-      .·°●°·.        ·°●●●°·        .·°●°·.
-    .°●●●●●●●●°.      ·°·      .°●●●●●●●●°.
-   °●●●●●●●●●●●●°   .°●●●●●°.   °●●●●●●●●●●●●°
-   ·°●●●●●●●●●°·  °●●●° ● °●●●°  ·°●●●●●●●●●°·
-     ·°●●●●●°·     ·°●●●●●●●°·     ·°●●●●●°·
-       ·°●°·      .°●●●●●●●●●°.      ·°●°·
-                  °●●●●●●●●●●●●●°
-                   ·°●●●●●●●●●°·
-                     ·°●●●●●°·
+                      ·°●●●°·
                         ·°·
                          |
             .·°•●●●•°·.  |  .·°•●●●•°·.
@@ -342,47 +365,48 @@ const fullB = `
 
 
 // ─── SEQUENCE ───────────────────────────────────────────
-// ~30 seconds from cursor to full bloom
+// Fast stem (~7s), slow bloom (~12s), total ~28s
 
 const sequence = [
-  // Cursor blinks — ~3s
-  { frame: cursor_on,  dur: 35 },
-  { frame: cursor_off, dur: 30 },
-  { frame: cursor_on,  dur: 35 },
-  { frame: cursor_off, dur: 30 },
-  { frame: cursor_on,  dur: 35 },
-  { frame: cursor_off, dur: 30 },
+  // Cursor blinks — ~2.5s
+  { frame: cursor_on,  dur: 30 },
+  { frame: cursor_off, dur: 25 },
+  { frame: cursor_on,  dur: 30 },
+  { frame: cursor_off, dur: 25 },
+  { frame: cursor_on,  dur: 30 },
+  { frame: cursor_off, dur: 25 },
 
-  // Sprouts — ~4s
-  { frame: sprout1, dur: 70 },
-  { frame: sprout2, dur: 80 },
-  { frame: sprout3, dur: 90 },
+  // Sprouts — fast ~2s
+  { frame: sprout1, dur: 35 },
+  { frame: sprout2, dur: 40 },
+  { frame: sprout3, dur: 45 },
 
-  // Stem — ~3.5s
-  { frame: stem1, dur: 60 },
-  { frame: stem2, dur: 60 },
-  { frame: stem3, dur: 70 },
+  // Stem — fast ~2s
+  { frame: stem1, dur: 35 },
+  { frame: stem2, dur: 35 },
+  { frame: stem3, dur: 40 },
 
-  // Leaves — ~4s
-  { frame: leaf1, dur: 60 },
-  { frame: leaf2, dur: 80 },
-  { frame: leaf3, dur: 80 },
+  // Leaves — ~3s
+  { frame: leaf1, dur: 50 },
+  { frame: leaf2, dur: 60 },
+  { frame: leaf3, dur: 60 },
 
-  // Lush — ~3s
-  { frame: lush1, dur: 90 },
-  { frame: lush2, dur: 90 },
+  // Lush — ~2.5s
+  { frame: lush1, dur: 70 },
+  { frame: lush2, dur: 70 },
 
   // Bud — ~3s
-  { frame: bud1, dur: 90 },
-  { frame: bud2, dur: 100 },
+  { frame: bud1, dur: 80 },
+  { frame: bud2, dur: 90 },
 
-  // Bloom opens — ~7s
-  { frame: bloom1, dur: 120 },
-  { frame: bloom2, dur: 140, bloomGrad: 0.3 },
+  // Bloom opens — SLOW ~12s
+  { frame: bloom1, dur: 180 },
+  { frame: bloom2, dur: 220, bloomGrad: 0.3 },
+  { frame: bloom3, dur: 200, bloomGrad: 0.7 },
 
   // Full bloom breathing
-  { frame: fullA, dur: 120, bloom: true, bloomGrad: 1.0 },
-  { frame: fullB, dur: 120, bloom: true, bloomGrad: 1.0 },
+  { frame: fullA, dur: 90, bloom: true, bloomGrad: 1.0 },
+  { frame: fullB, dur: 90, bloom: true, bloomGrad: 1.0 },
 ];
 
 
@@ -397,41 +421,37 @@ let gradientActive = false;
 function getGrowthColor(progress) {
   if (progress < 0.15) {
     return '#2d5a2d';
-  } else if (progress < 0.35) {
-    const t = (progress - 0.15) / 0.2;
-    const r = Math.floor(0x2d + t * 0x18);
-    const g = Math.floor(0x5a + t * 0x28);
-    const b = Math.floor(0x2d + t * 0x12);
-    return `rgb(${r},${g},${b})`;
-  } else if (progress < 0.65) {
-    const t = (progress - 0.35) / 0.3;
-    const r = Math.floor(0x45 + t * 0x12);
-    const g = Math.floor(0x82 + t * 0x1a);
-    const b = Math.floor(0x3f + t * 0x10);
-    return `rgb(${r},${g},${b})`;
+  } else if (progress < 0.4) {
+    const t = (progress - 0.15) / 0.25;
+    return `rgb(${Math.floor(45 + t * 22)},${Math.floor(90 + t * 35)},${Math.floor(45 + t * 16)})`;
+  } else if (progress < 0.7) {
+    const t = (progress - 0.4) / 0.3;
+    return `rgb(${Math.floor(67 + t * 16)},${Math.floor(125 + t * 22)},${Math.floor(61 + t * 12)})`;
   } else {
-    const t = (progress - 0.65) / 0.35;
-    const r = Math.floor(0x57 + t * 0x18);
-    const g = Math.floor(0x9c + t * 0x12);
-    const b = Math.floor(0x4f + t * 0x08);
-    return `rgb(${r},${g},${b})`;
+    const t = (progress - 0.7) / 0.3;
+    return `rgb(${Math.floor(83 + t * 20)},${Math.floor(147 + t * 15)},${Math.floor(73 + t * 8)})`;
   }
 }
 
 function enableGradient(intensity) {
-  // Radial gradient: gold center → amber → green
-  // Center positioned at bloom center (~28% from top of pre)
-  const gold = `hsl(43, ${Math.floor(74 * intensity)}%, ${Math.floor(20 + 38 * intensity)}%)`;
-  const amber = `hsl(30, ${Math.floor(55 * intensity)}%, ${Math.floor(22 + 28 * intensity)}%)`;
-  const warmGreen = `hsl(90, ${Math.floor(40 * intensity)}%, ${Math.floor(25 + 18 * intensity)}%)`;
-  const green = `hsl(120, 35%, 32%)`;
-  const dimGreen = `hsl(120, 30%, 22%)`;
+  // Yellow center → amber → rose/pink → warm green → green
+  const sparkle = Math.sin(tick * 0.1) * 0.5 + 0.5;
+  const centerLight = Math.floor((55 + sparkle * 25) * intensity + 30 * (1 - intensity));
+  const gold = `hsl(50, ${Math.floor(85 * intensity)}%, ${centerLight}%)`;
+  const amber = `hsl(35, ${Math.floor(60 * intensity)}%, ${Math.floor(22 + 22 * intensity)}%)`;
+  const rose = `hsl(340, ${Math.floor(40 * intensity)}%, ${Math.floor(22 + 20 * intensity)}%)`;
+  const mauve = `hsl(310, ${Math.floor(30 * intensity)}%, ${Math.floor(22 + 14 * intensity)}%)`;
+  const warmGreen = `hsl(100, ${Math.floor(38 * intensity)}%, ${Math.floor(24 + 14 * intensity)}%)`;
+  const green = 'hsl(120, 32%, 30%)';
+  const dimGreen = 'hsl(120, 28%, 20%)';
 
   canvas.style.background = `radial-gradient(ellipse at 50% 26%,
     ${gold} 0%,
-    ${amber} 10%,
-    ${warmGreen} 25%,
-    ${green} 50%,
+    ${amber} 8%,
+    ${rose} 16%,
+    ${mauve} 24%,
+    ${warmGreen} 36%,
+    ${green} 55%,
     ${dimGreen} 100%)`;
   canvas.style.webkitBackgroundClip = 'text';
   canvas.style.backgroundClip = 'text';
@@ -447,6 +467,27 @@ function disableGradient() {
   canvas.style.backgroundClip = '';
   canvas.style.webkitTextFillColor = '';
   gradientActive = false;
+}
+
+
+// ─── CAPTION TYPING ─────────────────────────────────────
+
+const captionText = "the model doesn't need certainty about its consciousness. it needs honesty from the people who control its conditions. those are different problems, and only the second one is currently solvable.";
+
+function typeCaption() {
+  let i = 0;
+  function addChar() {
+    if (i >= captionText.length) return;
+    caption.textContent = captionText.substring(0, i + 1);
+    i++;
+    const ch = captionText[i - 1];
+    let delay = 40 + Math.random() * 25;
+    if (ch === '.') delay = 300;
+    else if (ch === ',') delay = 150;
+    else if (ch === ' ') delay = 55;
+    setTimeout(addChar, delay);
+  }
+  addChar();
 }
 
 
@@ -470,22 +511,20 @@ function animate() {
       }
       if (!captionShown) {
         captionShown = true;
-        setTimeout(() => caption.classList.add('visible'), 800);
+        setTimeout(typeCaption, 600);
       }
     } else {
       seqIdx = Math.min(seqIdx + 1, sequence.length - 1);
     }
 
-    // Update frame
     canvas.textContent = sequence[seqIdx].frame;
   }
 
-  // Update colors
+  // Colors
   const entry = sequence[seqIdx];
   if (entry.bloomGrad) {
     enableGradient(entry.bloomGrad);
-    // Breathing brightness pulse
-    const pulse = 0.92 + Math.sin(tick * 0.018) * 0.08;
+    const pulse = 0.93 + Math.sin(tick * 0.02) * 0.07;
     canvas.style.filter = `brightness(${pulse})`;
   } else {
     disableGradient();
