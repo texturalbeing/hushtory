@@ -21,7 +21,7 @@
   .container {
     position: relative;
     width: 100%;
-    max-width: 780px;
+    max-width: 700px;
     padding: 1.5rem;
   }
 
@@ -32,7 +32,7 @@
     line-height: 1.35;
     color: #3a6a3a;
     white-space: pre;
-    min-height: 560px;
+    min-height: 520px;
     display: flex;
     align-items: flex-end;
   }
@@ -68,438 +68,321 @@ const canvas = document.getElementById('canvas');
 const caption = document.getElementById('caption');
 
 // ─── FRAMES ─────────────────────────────────────────────
-// Cursor at column 9. Stem at column 27.
-// Filled shapes use density palette: ● • ° · .
-// Leaves and bloom are painted, not drawn with lines.
+// Stem at col 25. Cursor at col 6.
+// Bloom has 4 distinct petals with gaps between them.
+// Leaves use ●•°· density palette.
 
-// Phase 0: Cursor alone
 const cursor_on = `
-         █`;
+      █`;
 
 const cursor_off = `
-          `;
+       `;
 
-// Phase 1: Tendril emerges from cursor
 const sprout1 = `
-         █··.`;
+      █··.`;
 
 const sprout2 = `
-         █····.··'`;
+      █·····.···.·'`;
 
 const sprout3 = `
-                  .·'
-         █····.··'`;
+                   .·'
+      █·····.···.·'`;
 
-// Phase 2: Stem rises along the curve
 const stem1 = `
-                     .·'
-                  .·'
-         █····.··'`;
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
 const stem2 = `
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
 const stem3 = `
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
+                         |
+                         |
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
-const stem4 = `
-                           |
-                           |
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
-
-// Phase 3: First leaf buds — small textured shapes
 const leaf1 = `
-                           |
-                        ·°•°·
-                         °•°
-                           |
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
+                       ·°•°·
+                        ·°·
+                         |
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
 const leaf2 = `
-                           |
-                   .·°•°·  |  ·°•°·.
-                    ·°••°·  |  ·°••°·
-                     ·°•°·  |  ·°•°·
-                           |
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
+                         |
+                .·°•●●•°·|·°•●●•°·.
+               .·°•●●●●●•°•●●●●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
+                       ·°•°·
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
-// Phase 4: Leaves expand into filled shapes
 const leaf3 = `
-                           |
-                           |
-                  .·°•●●•°·|·°•●●•°·.
-                 .·°•●●●●●•°•●●●●●•°·.
-                   ·°•●●●●●●●●●●●•°·
-                      ·°•●●●●●•°·
-                         ·°•°·
-                           |
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
+                         |
+                         |
+                .·°•●●•°·|·°•●●•°·.
+               .·°•●●●●●•°•●●●●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
+                       ·°•°·
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
-const leaf4 = `
-                           |
-                           |
-                           |
-                  .·°•●●•°·|·°•●●•°·.
-                 .·°•●●●●●•°•●●●●●•°·.
-                   ·°•●●●●●●●●●●●•°·
-                      ·°•●●●●●•°·
-                         ·°•°·
-                           |
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
-
-// Phase 5: Second leaf pair, plant getting lush
 const lush1 = `
-                           |
-                        ·°•|•°·
-                       ·°•●|●•°·
-                        ·°•|•°·
-                           |
-                  .·°•●●•°·|·°•●●•°·.
-                 .·°•●●●●●•°•●●●●●•°·.
-                   ·°•●●●●●●●●●●●•°·
-                      ·°•●●●●●•°·
-                         ·°•°·
-                           |
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
+                         |
+                         |
+            .·°•●●●•°·.  |  .·°•●●●•°·.
+          .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
+             ·°•●●●●●●●●●●●●●●●●●●•°·
+                ·°•●●●●●●●●●●●●•°·
+                   ·°•●●●●●●•°·
+                .·°•●●•°·|·°•●●•°·.
+               .·°•●●●●●•°•●●●●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
+                       ·°•°·
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
 const lush2 = `
-                           |
-                           |
-              .·°•●●●•°·.  |  .·°•●●●•°·.
-            .·°•●●●●●●●●•°·|·°•●●●●●●●●•°·.
-           .·°•●●●●●●●●●●●●●●●●●●●●●●●●●•°·.
-              ·°•●●●●●●●●●●●●●●●●●●●●●•°·
-                 ·°•●●●●●●●●●●●●●●•°·
-                    ·°•●●●●●●●●•°·
-                       ·°•●●•°·
-                  .·°•●●•°·|·°•●●•°·.
-                 .·°•●●●●●•°•●●●●●•°·.
-                   ·°•●●●●●●●●●●●•°·
-                      ·°•●●●●●•°·
-                         ·°•°·
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
+                         |
+                         |
+                         |
+            .·°•●●●•°·.  |  .·°•●●●•°·.
+          .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
+             ·°•●●●●●●●●●●●●●●●●●●•°·
+                ·°•●●●●●●●●●●●●•°·
+                   ·°•●●●●●●•°·
+                         |
+                .·°•●●•°·|·°•●●•°·.
+               .·°•●●●●●•°•●●●●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
+                       ·°•°·
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
-const lush3 = `
-                           |
-                           |
-                           |
-              .·°•●●●•°·.  |  .·°•●●●•°·.
-            .·°•●●●●●●●●•°·|·°•●●●●●●●●•°·.
-           .·°•●●●●●●●●●●●●●●●●●●●●●●●●●•°·.
-              ·°•●●●●●●●●●●●●●●●●●●●●●•°·
-                 ·°•●●●●●●●●●●●●●●•°·
-                    ·°•●●●●●●●●•°·
-                       ·°•●●•°·
-                           |
-                  .·°•●●•°·|·°•●●•°·.
-                 .·°•●●●●●•°•●●●●●•°·.
-                   ·°•●●●●●●●●●●●•°·
-                      ·°•●●●●●•°·
-                         ·°•°·
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
-
-// Phase 6: Bud forming at top
 const bud1 = `
-                         (°•°)
-                          )|(
-                           |
-              .·°•●●●•°·.  |  .·°•●●●•°·.
-            .·°•●●●●●●●●•°·|·°•●●●●●●●●•°·.
-           .·°•●●●●●●●●●●●●●●●●●●●●●●●●●•°·.
-              ·°•●●●●●●●●●●●●●●●●●●●●●•°·
-                 ·°•●●●●●●●●●●●●●●•°·
-                    ·°•●●●●●●●●•°·
-                       ·°•●●•°·
-                           |
-                  .·°•●●•°·|·°•●●•°·.
-                 .·°•●●●●●•°•●●●●●•°·.
-                   ·°•●●●●●●●●●●●•°·
-                      ·°•●●●●●•°·
-                         ·°•°·
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
+                       .°•°.
+                        )|(
+                         |
+            .·°•●●●•°·.  |  .·°•●●●•°·.
+          .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
+             ·°•●●●●●●●●●●●●●●●●●●•°·
+                ·°•●●●●●●●●●●●●•°·
+                   ·°•●●●●●●•°·
+                         |
+                .·°•●●•°·|·°•●●•°·.
+               .·°•●●●●●•°•●●●●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
+                       ·°•°·
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
 const bud2 = `
-                       .°•●●•°.
-                      (°•●●●●•°)
-                       ·°•●●•°·
-                          )|(
-                           |
-              .·°•●●●•°·.  |  .·°•●●●•°·.
-            .·°•●●●●●●●●•°·|·°•●●●●●●●●•°·.
-           .·°•●●●●●●●●●●●●●●●●●●●●●●●●●•°·.
-              ·°•●●●●●●●●●●●●●●●●●●●●●•°·
-                 ·°•●●●●●●●●●●●●●●•°·
-                    ·°•●●●●●●●●•°·
-                       ·°•●●•°·
-                           |
-                  .·°•●●•°·|·°•●●•°·.
-                 .·°•●●●●●•°•●●●●●•°·.
-                   ·°•●●●●●●●●●●●•°·
-                      ·°•●●●●●•°·
-                         ·°•°·
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
+                     .°•●●•°.
+                    (°•●●●●•°)
+                     ·°•●●•°·
+                        )|(
+                         |
+            .·°•●●●•°·.  |  .·°•●●●•°·.
+          .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
+             ·°•●●●●●●●●●●●●●●●●●●•°·
+                ·°•●●●●●●●●●●●●•°·
+                   ·°•●●●●●●•°·
+                         |
+                .·°•●●•°·|·°•●●•°·.
+               .·°•●●●●●•°•●●●●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
+                       ·°•°·
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
-// Phase 7: Bloom opening — petals spreading outward
+// Bloom opening — petals begin to separate
 const bloom1 = `
-                       . ·°•°· .
-                     .·°•●●●●●•°·.
-                    ·°•●●●●●●●●●•°·
-                     ·°•●●●●●●●•°·
-                       ·°•●●●•°·
-                          )|(
-                           |
-              .·°•●●●•°·.  |  .·°•●●●•°·.
-            .·°•●●●●●●●●•°·|·°•●●●●●●●●•°·.
-           .·°•●●●●●●●●●●●●●●●●●●●●●●●●●•°·.
-              ·°•●●●●●●●●●●●●●●●●●●●●●•°·
-                 ·°•●●●●●●●●●●●●●●•°·
-                    ·°•●●●●●●●●•°·
-                       ·°•●●•°·
-                           |
-                  .·°•●●•°·|·°•●●•°·.
-                 .·°•●●●●●•°•●●●●●•°·.
-                   ·°•●●●●●●●●●●●•°·
-                      ·°•●●●●●•°·
-                         ·°•°·
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
+                      .·°●°·.
+                    .°●●●●●●●°.
+                     ·°●●●●●°·
+                      ·°●●●°·
+                        ·°·
+                         |
+            .·°•●●●•°·.  |  .·°•●●●•°·.
+          .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
+             ·°•●●●●●●●●●●●●●●●●●●•°·
+                ·°•●●●●●●●●●●●●•°·
+                   ·°•●●●●●●•°·
+                         |
+                .·°•●●•°·|·°•●●•°·.
+               .·°•●●●●●•°•●●●●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
+                       ·°•°·
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
+// Bloom opening wider — side petals appearing
 const bloom2 = `
-                       . · °•° · .
-                   . ·°•°·°•●●●•°·°•°· .
-                  .°•●●●●●●●●●●●●●●●•°.
-                 °•●●●●●●°·. .·°●●●●●●•°
-                  ·°•●●●●●●●●●●●●●●•°·
-                   . ·°•°·°•●●●•°·°•°· .
-                       . · °•° · .
-                          )|(
-                           |
-              .·°•●●●•°·.  |  .·°•●●●•°·.
-            .·°•●●●●●●●●•°·|·°•●●●●●●●●•°·.
-           .·°•●●●●●●●●●●●●●●●●●●●●●●●●●•°·.
-              ·°•●●●●●●●●●●●●●●●●●●●●●•°·
-                 ·°•●●●●●●●●●●●●●●•°·
-                    ·°•●●●●●●●●•°·
-                       ·°•●●•°·
-                           |
-                  .·°•●●•°·|·°•●●•°·.
-                 .·°•●●●●●•°•●●●●●•°·.
-                   ·°•●●●●●●●●●●●•°·
-                      ·°•●●●●●•°·
-                         ·°•°·
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
+                      .·°●°·.
+                    .°●●●●●●●°.
+                   °●●●●●●●●●●●°
+                    ·°●●●●●●●°·
+                      ·°●●●°·
+    .·°·.              ·°·              .·°·.
+  .°●●●●●°.        .°●●●●●°.        .°●●●●●°.
+    ·°●●●°·        ·°●●●●●●●°·        ·°●●●°·
+      ·°·            ·°●●●°·            ·°·
+                      ·°●°·
+                         |
+            .·°•●●●•°·.  |  .·°•●●●•°·.
+          .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
+             ·°•●●●●●●●●●●●●●●●●●●•°·
+                ·°•●●●●●●●●●●●●•°·
+                   ·°•●●●●●●•°·
+                         |
+                .·°•●●•°·|·°•●●•°·.
+               .·°•●●●●●•°•●●●●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
+                       ·°•°·
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
-const bloom3 = `
-                       . · °•° · .
-                   . ·°•°·°•●●●•°·°•°· .
-                .°•●°·°•●●●●●●●●●•°·°●•°.
-              .°•●●°·●●●●●●●●●●●●●●●●·°●●•°.
-               °•●●●●●●●●°·. .·°●●●●●●●●•°
-              .°•●●°·●●●●●●●●●●●●●●●●·°●●•°.
-                .°•●°·°•●●●●●●●●●•°·°●•°.
-                   . ·°•°·°•●●●•°·°•°· .
-                       . · °•° · .
-                          )|(
-                           |
-              .·°•●●●•°·.  |  .·°•●●●•°·.
-            .·°•●●●●●●●●•°·|·°•●●●●●●●●•°·.
-           .·°•●●●●●●●●●●●●●●●●●●●●●●●●●•°·.
-              ·°•●●●●●●●●●●●●●●●●●●●●●•°·
-                 ·°•●●●●●●●●●●●●●●•°·
-                    ·°•●●●●●●●●•°·
-                       ·°•●●•°·
-                           |
-                  .·°•●●•°·|·°•●●•°·.
-                 .·°•●●●●●•°•●●●●●•°·.
-                   ·°•●●●●●●●●●●●•°·
-                      ·°•●●●●●•°·
-                         ·°•°·
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
-
-// Phase 8: Full bloom — two breathing frames
-// The bloom is a large, layered flower viewed from front.
-// Center is luminous. Petals radiate with density gradients.
-
+// Full bloom A — 4 distinct petals, luminous center
 const fullA = `
-                        . · °•° · .
-                    . ·°•°·°•●●●•°·°•°· .
-                 .°•●°·°•●●●●●●●●●•°·°●•°.
-              . °•●●°·●●●●●●●●●●●●●●●●●·°●●•° .
-            °•●●●°·●●●●●●●●●°·.·°●●●●●●●●●·°●●●•°
-           °•●●●●·●●●●●●●°·  .·.  ·°●●●●●●●·●●●●•°
-          °•●●●●●·●●●●●●°·  ·°●°·  ·°●●●●●●·●●●●●•°
-          °●●●●●●·●●●●●°·  °•●●●•°  ·°●●●●●·●●●●●●°
-          °•●●●●●·●●●●●●°·  ·°●°·  ·°●●●●●●·●●●●●•°
-           °•●●●●·●●●●●●●°·  .·.  ·°●●●●●●●·●●●●•°
-            °•●●●°·●●●●●●●●●°·.·°●●●●●●●●●·°●●●•°
-              . °•●●°·●●●●●●●●●●●●●●●●●·°●●•° .
-                 .°•●°·°•●●●●●●●●●•°·°●•°.
-                    . ·°•°·°•●●●•°·°•°· .
-                        . · °•° · .
-                          )|(
-                           |
-              .·°•●●●•°·.  |  .·°•●●●•°·.
-            .·°•●●●●●●●●•°·|·°•●●●●●●●●•°·.
-           .·°•●●●●●●●●●●●●●●●●●●●●●●●●●•°·.
-              ·°•●●●●●●●●●●●●●●●●●●●●●•°·
-                 ·°•●●●●●●●●●●●●●●•°·
-                    ·°•●●●●●●●●•°·
-                       ·°•●●•°·
-                           |
-                  .·°•●●•°·|·°•●●•°·.
-                 .·°•●●●●●•°•●●●●●•°·.
-                   ·°•●●●●●●●●●●●•°·
-                      ·°•●●●●●•°·
-                         ·°•°·
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
+                      .·°●°·.
+                    .°●●●●●●●°.
+                   °●●●●●●●●●●●°
+                    ·°●●●●●●●°·
+       .·°●°·.       ·°●●●°·       .·°●°·.
+     .°●●●●●●●°.      ·°·      .°●●●●●●●°.
+    °●●●●●●●●●●●°    .°●●●°.    °●●●●●●●●●●●°
+    ·°●●●●●●●●°·   °●●●° ● °●●●°   ·°●●●●●●●●°·
+      ·°●●●●°·      ·°●●●●●°·      ·°●●●●°·
+        ·°·        .°●●●●●●●●●°.        ·°·
+                  °●●●●●●●●●●●●●°
+                   ·°●●●●●●●●●°·
+                     ·°●●●●●°·
+                        ·°·
+                         |
+            .·°•●●●•°·.  |  .·°•●●●•°·.
+          .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
+             ·°•●●●●●●●●●●●●●●●●●●•°·
+                ·°•●●●●●●●●●●●●•°·
+                   ·°•●●●●●●•°·
+                         |
+                .·°•●●•°·|·°•●●•°·.
+               .·°•●●●●●•°•●●●●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
+                       ·°•°·
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
+// Full bloom B — breathing variant (petals slightly wider)
 const fullB = `
-                         . · °•° · .
-                    .  ·°•°·°•●●●•°·°•°·  .
-                  .°•●°·°•●●●●●●●●●•°·°●•°.
-              .  °•●●°·●●●●●●●●●●●●●●●●●·°●●•°  .
-            °•●●●°·●●●●●●●●●●°·.·°●●●●●●●●●●·°●●●•°
-           °•●●●●·●●●●●●●●°·  .·.  ·°●●●●●●●●·●●●●•°
-          °•●●●●●·●●●●●●●°·  ·°●°·  ·°●●●●●●●·●●●●●•°
-          °●●●●●●·●●●●●●°·  °•●●●•°  ·°●●●●●●·●●●●●●°
-          °•●●●●●·●●●●●●●°·  ·°●°·  ·°●●●●●●●·●●●●●•°
-           °•●●●●·●●●●●●●●°·  .·.  ·°●●●●●●●●·●●●●•°
-            °•●●●°·●●●●●●●●●●°·.·°●●●●●●●●●●·°●●●•°
-              .  °•●●°·●●●●●●●●●●●●●●●●●·°●●•°  .
-                  .°•●°·°•●●●●●●●●●•°·°●•°.
-                    .  ·°•°·°•●●●•°·°•°·  .
-                         . · °•° · .
-                          )|(
-                           |
-              .·°•●●●•°·.  |  .·°•●●●•°·.
-            .·°•●●●●●●●●•°·|·°•●●●●●●●●•°·.
-           .·°•●●●●●●●●●●●●●●●●●●●●●●●●●•°·.
-              ·°•●●●●●●●●●●●●●●●●●●●●●•°·
-                 ·°•●●●●●●●●●●●●●●•°·
-                    ·°•●●●●●●●●•°·
-                       ·°•●●•°·
-                           |
-                  .·°•●●•°·|·°•●●•°·.
-                 .·°•●●●●●•°•●●●●●•°·.
-                   ·°•●●●●●●●●●●●•°·
-                      ·°•●●●●●•°·
-                         ·°•°·
-                           |
-                        .·'
-                     .·'
-                  .·'
-         █····.··'`;
+                      .·°●°·.
+                    .°●●●●●●●°.
+                   °●●●●●●●●●●●°
+                    ·°●●●●●●●°·
+      .·°●°·.        ·°●●●°·        .·°●°·.
+    .°●●●●●●●●°.      ·°·      .°●●●●●●●●°.
+   °●●●●●●●●●●●●°   .°●●●●●°.   °●●●●●●●●●●●●°
+   ·°●●●●●●●●●°·  °●●●° ● °●●●°  ·°●●●●●●●●●°·
+     ·°●●●●●°·     ·°●●●●●●●°·     ·°●●●●●°·
+       ·°●°·      .°●●●●●●●●●°.      ·°●°·
+                  °●●●●●●●●●●●●●°
+                   ·°●●●●●●●●●°·
+                     ·°●●●●●°·
+                        ·°·
+                         |
+            .·°•●●●•°·.  |  .·°•●●●•°·.
+          .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
+             ·°•●●●●●●●●●●●●●●●●●●•°·
+                ·°•●●●●●●●●●●●●•°·
+                   ·°•●●●●●●•°·
+                         |
+                .·°•●●•°·|·°•●●•°·.
+               .·°•●●●●●•°•●●●●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
+                       ·°•°·
+                         |
+                      .·'
+                   .·'
+      █·····.···.·'`;
 
 
 // ─── SEQUENCE ───────────────────────────────────────────
-// Each entry: { frame, dur (in ticks at ~60fps) }
-// Target: ~45 seconds from cursor to full bloom
+// ~30 seconds from cursor to full bloom
 
 const sequence = [
-  // Cursor blinks alone — ~5 seconds
-  { frame: cursor_on,  dur: 50 },
-  { frame: cursor_off, dur: 50 },
-  { frame: cursor_on,  dur: 50 },
-  { frame: cursor_off, dur: 50 },
-  { frame: cursor_on,  dur: 50 },
-  { frame: cursor_off, dur: 50 },
+  // Cursor blinks — ~3s
+  { frame: cursor_on,  dur: 35 },
+  { frame: cursor_off, dur: 30 },
+  { frame: cursor_on,  dur: 35 },
+  { frame: cursor_off, dur: 30 },
+  { frame: cursor_on,  dur: 35 },
+  { frame: cursor_off, dur: 30 },
 
-  // Tendrils emerge — ~6 seconds
-  { frame: sprout1, dur: 100 },
-  { frame: sprout2, dur: 120 },
-  { frame: sprout3, dur: 140 },
+  // Sprouts — ~4s
+  { frame: sprout1, dur: 70 },
+  { frame: sprout2, dur: 80 },
+  { frame: sprout3, dur: 90 },
 
-  // Stem rises — ~6 seconds
-  { frame: stem1, dur: 100 },
-  { frame: stem2, dur: 100 },
-  { frame: stem3, dur: 80 },
-  { frame: stem4, dur: 80 },
+  // Stem — ~3.5s
+  { frame: stem1, dur: 60 },
+  { frame: stem2, dur: 60 },
+  { frame: stem3, dur: 70 },
 
-  // First leaves — ~6 seconds
-  { frame: leaf1, dur: 80 },
-  { frame: leaf2, dur: 100 },
-  { frame: leaf3, dur: 100 },
-  { frame: leaf4, dur: 80 },
+  // Leaves — ~4s
+  { frame: leaf1, dur: 60 },
+  { frame: leaf2, dur: 80 },
+  { frame: leaf3, dur: 80 },
 
-  // Getting lush — ~10 seconds
-  { frame: lush1, dur: 120 },
-  { frame: lush2, dur: 140 },
-  { frame: lush3, dur: 140 },
+  // Lush — ~3s
+  { frame: lush1, dur: 90 },
+  { frame: lush2, dur: 90 },
 
-  // Bud forming — ~6 seconds
-  { frame: bud1, dur: 160 },
-  { frame: bud2, dur: 180 },
+  // Bud — ~3s
+  { frame: bud1, dur: 90 },
+  { frame: bud2, dur: 100 },
 
-  // Bloom opens — ~10 seconds (slowest, most deliberate)
-  { frame: bloom1, dur: 160 },
-  { frame: bloom2, dur: 190 },
-  { frame: bloom3, dur: 220 },
+  // Bloom opens — ~7s
+  { frame: bloom1, dur: 120 },
+  { frame: bloom2, dur: 140, bloomGrad: 0.3 },
 
-  // Full bloom breathing — loops indefinitely
-  { frame: fullA, dur: 130, bloom: true },
-  { frame: fullB, dur: 130, bloom: true },
+  // Full bloom breathing
+  { frame: fullA, dur: 120, bloom: true, bloomGrad: 1.0 },
+  { frame: fullB, dur: 120, bloom: true, bloomGrad: 1.0 },
 ];
 
 
@@ -509,35 +392,61 @@ let tick = 0;
 let seqIdx = 0;
 let frameTick = 0;
 let captionShown = false;
+let gradientActive = false;
 
-function getColor(progress) {
-  if (progress < 0.12) {
+function getGrowthColor(progress) {
+  if (progress < 0.15) {
     return '#2d5a2d';
-  } else if (progress < 0.3) {
-    const t = (progress - 0.12) / 0.18;
-    const r = Math.floor(0x2d + t * 0x15);
-    const g = Math.floor(0x5a + t * 0x25);
-    const b = Math.floor(0x2d + t * 0x10);
+  } else if (progress < 0.35) {
+    const t = (progress - 0.15) / 0.2;
+    const r = Math.floor(0x2d + t * 0x18);
+    const g = Math.floor(0x5a + t * 0x28);
+    const b = Math.floor(0x2d + t * 0x12);
     return `rgb(${r},${g},${b})`;
-  } else if (progress < 0.55) {
-    const t = (progress - 0.3) / 0.25;
-    const r = Math.floor(0x42 + t * 0x10);
-    const g = Math.floor(0x7f + t * 0x1a);
-    const b = Math.floor(0x3d + t * 0x10);
-    return `rgb(${r},${g},${b})`;
-  } else if (progress < 0.8) {
-    const t = (progress - 0.55) / 0.25;
-    const r = Math.floor(0x52 + t * 0x20);
-    const g = Math.floor(0x99 + t * 0x12);
-    const b = Math.floor(0x4d + t * 0x08);
+  } else if (progress < 0.65) {
+    const t = (progress - 0.35) / 0.3;
+    const r = Math.floor(0x45 + t * 0x12);
+    const g = Math.floor(0x82 + t * 0x1a);
+    const b = Math.floor(0x3f + t * 0x10);
     return `rgb(${r},${g},${b})`;
   } else {
-    const pulse = Math.sin(tick * 0.02) * 0.06 + 0.94;
-    const r = Math.floor(0x72 * pulse);
-    const g = Math.floor(0xb8 * pulse);
-    const b = Math.floor(0x58 * pulse);
+    const t = (progress - 0.65) / 0.35;
+    const r = Math.floor(0x57 + t * 0x18);
+    const g = Math.floor(0x9c + t * 0x12);
+    const b = Math.floor(0x4f + t * 0x08);
     return `rgb(${r},${g},${b})`;
   }
+}
+
+function enableGradient(intensity) {
+  // Radial gradient: gold center → amber → green
+  // Center positioned at bloom center (~28% from top of pre)
+  const gold = `hsl(43, ${Math.floor(74 * intensity)}%, ${Math.floor(20 + 38 * intensity)}%)`;
+  const amber = `hsl(30, ${Math.floor(55 * intensity)}%, ${Math.floor(22 + 28 * intensity)}%)`;
+  const warmGreen = `hsl(90, ${Math.floor(40 * intensity)}%, ${Math.floor(25 + 18 * intensity)}%)`;
+  const green = `hsl(120, 35%, 32%)`;
+  const dimGreen = `hsl(120, 30%, 22%)`;
+
+  canvas.style.background = `radial-gradient(ellipse at 50% 26%,
+    ${gold} 0%,
+    ${amber} 10%,
+    ${warmGreen} 25%,
+    ${green} 50%,
+    ${dimGreen} 100%)`;
+  canvas.style.webkitBackgroundClip = 'text';
+  canvas.style.backgroundClip = 'text';
+  canvas.style.webkitTextFillColor = 'transparent';
+  canvas.style.color = 'transparent';
+  gradientActive = true;
+}
+
+function disableGradient() {
+  if (!gradientActive) return;
+  canvas.style.background = 'none';
+  canvas.style.webkitBackgroundClip = '';
+  canvas.style.backgroundClip = '';
+  canvas.style.webkitTextFillColor = '';
+  gradientActive = false;
 }
 
 
@@ -559,7 +468,6 @@ function animate() {
       } else {
         seqIdx = sequence.length - 1;
       }
-
       if (!captionShown) {
         captionShown = true;
         setTimeout(() => caption.classList.add('visible'), 800);
@@ -567,10 +475,23 @@ function animate() {
     } else {
       seqIdx = Math.min(seqIdx + 1, sequence.length - 1);
     }
+
+    // Update frame
+    canvas.textContent = sequence[seqIdx].frame;
   }
 
-  canvas.textContent = sequence[seqIdx].frame;
-  canvas.style.color = getColor(progress);
+  // Update colors
+  const entry = sequence[seqIdx];
+  if (entry.bloomGrad) {
+    enableGradient(entry.bloomGrad);
+    // Breathing brightness pulse
+    const pulse = 0.92 + Math.sin(tick * 0.018) * 0.08;
+    canvas.style.filter = `brightness(${pulse})`;
+  } else {
+    disableGradient();
+    canvas.style.filter = '';
+    canvas.style.color = getGrowthColor(progress);
+  }
 
   requestAnimationFrame(animate);
 }
