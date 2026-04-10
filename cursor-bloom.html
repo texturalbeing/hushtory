@@ -63,8 +63,8 @@ const canvas = document.getElementById('canvas');
 const caption = document.getElementById('caption');
 
 // ─── FRAMES ─────────────────────────────────────────────
-// Stem col 25. 5-petal bloom. Wilder S-curve root.
-// Single leaf pair for compact height.
+// Stem col 25. 5-petal bloom. Two leaf pairs.
+// Leaves grow simultaneously with bloom opening.
 
 const cursor_on = `
          █`;
@@ -103,12 +103,14 @@ const stem4 = `
 const leaf1 = `
                        ·°•°·
                          |
+                         |
                        .·'
                     .~·'
                   .·'
          █·.·.·.·'`;
 
 const leaf2 = `
+                         |
             .·°•●●●•°·.  |  .·°•●●●•°·.
           .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
              ·°•●●●●●●●●●●●●●●●●●●•°·
@@ -126,6 +128,7 @@ const bud1 = `
                     (°•●●●●•°)
                      ·°•●●•°·
                         )|(
+                         |
             .·°•●●●•°·.  |  .·°•●●●•°·.
           .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
              ·°•●●●●●●●●●●●●●●●●●●•°·
@@ -138,16 +141,18 @@ const bud1 = `
                   .·'
          █·.·.·.·'`;
 
-// ─── BLOOM UNFURLING ────────────────────────────────────
-// Top petal opens first, then sides, then bottom pair
+// ─── BLOOM UNFURLING + SIMULTANEOUS LEAF GROWTH ─────────
+// Bloom opens from top while second leaf pair grows below
 
-// Stage 1: top petal lifts from bud
+// Stage 1: top petal lifts, upper leaves hold, lower buds appear
 const bloom1 = `
                       .°●●●°.
                     .°●●●●●●●°.
                      ·°●●●●●°·
                       ·°●●●°·
                         ·°·
+                         |
+                         |
             .·°•●●●•°·.  |  .·°•●●●•°·.
           .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
              ·°•●●●●●●●●●●●●●●●●●●•°·
@@ -160,7 +165,7 @@ const bloom1 = `
                   .·'
          █·.·.·.·'`;
 
-// Stage 2: side petals begin to emerge
+// Stage 2: side petals emerge, second leaf pair sprouts
 const bloom2 = `
                       .°●●●°.
                     .°●●●●●●●°.
@@ -169,19 +174,23 @@ const bloom2 = `
     .°●●●●●°.        ·°●°·        .°●●●●●°.
       ·°●°·         ·°●●●°·         ·°●°·
                       ·°●°·
+                         |
+                         |
             .·°•●●●•°·.  |  .·°•●●●•°·.
           .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
              ·°•●●●●●●●●●●●●●●●●●●•°·
                 ·°•●●●●●●●●●●●●•°·
                    ·°•●●●●●●•°·
-                       ·°•°·
+                  .·°•●●•°·|·°•●●•°·.
+                   ·°•●●●●●●●●●•°·
+                      ·°•●●●●•°·
                          |
                        .·'
                     .~·'
                   .·'
          █·.·.·.·'`;
 
-// Stage 3: all 5 petals visible, center opening
+// Stage 3: all 5 petals visible, lower leaves expanding
 const bloom3 = `
                       .°●●●°.
                     .°●●●●●●●°.
@@ -192,11 +201,16 @@ const bloom3 = `
            ·°●°·    ·°●●●●●●●°·    ·°●°·
               .°●●°·  ·°●●●°·  ·°●●°.
                ·°●°·    ·    ·°●°·
+                         |
+                         |
             .·°•●●●•°·.  |  .·°•●●●•°·.
           .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
              ·°•●●●●●●●●●●●●●●●●●●•°·
                 ·°•●●●●●●●●●●●●•°·
                    ·°•●●●●●●•°·
+               .·°•●●•°·|·°•●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
                        ·°•°·
                          |
                        .·'
@@ -204,7 +218,7 @@ const bloom3 = `
                   .·'
          █·.·.·.·'`;
 
-// Stage 4: petals fully open, bottom pair spread
+// Stage 4: petals fully open, both leaf pairs lush
 const bloom4 = `
                       .°●●●°.
                     .°●●●●●●●°.
@@ -216,11 +230,16 @@ const bloom4 = `
            .°●●●°·°. ·°●●●°· .°·°●●●°.
           °●●●●●●●°·    ·    ·°●●●●●●●°
            ·°●●●°·             ·°●●●°·
+                         |
+                         |
             .·°•●●●•°·.  |  .·°•●●●•°·.
           .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
              ·°•●●●●●●●●●●●●●●●●●●•°·
                 ·°•●●●●●●●●●●●●•°·
                    ·°•●●●●●●•°·
+               .·°•●●•°·|·°•●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
                        ·°•°·
                          |
                        .·'
@@ -228,7 +247,7 @@ const bloom4 = `
                   .·'
          █·.·.·.·'`;
 
-// Full bloom A — 5 petals, center sparkle *
+// Full bloom A — center sparkle *
 const fullA = `
                       .°●●●°.
                     .°●●●●●●●°.
@@ -240,11 +259,16 @@ const fullA = `
            .°●●●°·°. ·°●●●°· .°·°●●●°.
           °●●●●●●●°·    ·    ·°●●●●●●●°
            ·°●●●°·             ·°●●●°·
+                         |
+                         |
             .·°•●●●•°·.  |  .·°•●●●•°·.
           .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
              ·°•●●●●●●●●●●●●●●●●●●•°·
                 ·°•●●●●●●●●●●●●•°·
                    ·°•●●●●●●•°·
+               .·°•●●•°·|·°•●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
                        ·°•°·
                          |
                        .·'
@@ -252,7 +276,7 @@ const fullA = `
                   .·'
          █·.·.·.·'`;
 
-// Full bloom B — petals swell, center twinkle off
+// Full bloom B — petals swell, center twinkle
 const fullB = `
                       .°●●●°.
                     .°●●●●●●●°.
@@ -264,11 +288,16 @@ const fullB = `
           .°●●●●°·°. ·°●●●°· .°·°●●●●°.
          °●●●●●●●●°·    ·    ·°●●●●●●●●°
           ·°●●●●°·             ·°●●●●°·
+                         |
+                         |
             .·°•●●●•°·.  |  .·°•●●●•°·.
           .·°•●●●●●●●●●●●●●●●●●●●●●●●•°·.
              ·°•●●●●●●●●●●●●●●●●●●•°·
                 ·°•●●●●●●●●●●●●•°·
                    ·°•●●●●●●•°·
+               .·°•●●•°·|·°•●●•°·.
+                 ·°•●●●●●●●●●●●•°·
+                    ·°•●●●●●•°·
                        ·°•°·
                          |
                        .·'
@@ -278,7 +307,6 @@ const fullB = `
 
 
 // ─── SEQUENCE ───────────────────────────────────────────
-// Fast stem (~5s), slow unfurling bloom (~14s)
 
 const sequence = [
   // Cursor blinks — ~2s
@@ -302,7 +330,7 @@ const sequence = [
   { frame: leaf2, dur: 60 },
   { frame: bud1, dur: 100 },
 
-  // Bloom UNFURLS — SLOW ~14s
+  // Bloom UNFURLS while leaves grow — SLOW ~14s
   { frame: bloom1, dur: 180, bloomGrad: 0.2 },
   { frame: bloom2, dur: 200, bloomGrad: 0.4 },
   { frame: bloom3, dur: 220, bloomGrad: 0.7 },
@@ -335,7 +363,8 @@ function getGrowthColor(progress) {
 }
 
 function enableGradient(intensity) {
-  // NO GREEN in bloom. Yellow → coral → rose → mauve → (green only at leaves)
+  // Warm colors END before leaves. Leaves stay green.
+  // Gradient center at bloom position (~19% from top)
   const sparkle = Math.sin(tick * 0.12) * 0.5 + 0.5;
   const centerLight = Math.floor((58 + sparkle * 28) * intensity + 28 * (1 - intensity));
 
@@ -343,22 +372,19 @@ function enableGradient(intensity) {
   const gold = `hsl(38, ${Math.floor(72 * intensity)}%, ${Math.floor(26 + 22 * intensity)}%)`;
   const coral = `hsl(15, ${Math.floor(55 * intensity)}%, ${Math.floor(24 + 20 * intensity)}%)`;
   const rose = `hsl(350, ${Math.floor(48 * intensity)}%, ${Math.floor(24 + 18 * intensity)}%)`;
-  const pink = `hsl(335, ${Math.floor(40 * intensity)}%, ${Math.floor(24 + 14 * intensity)}%)`;
-  const mauve = `hsl(310, ${Math.floor(30 * intensity)}%, ${Math.floor(24 + 10 * intensity)}%)`;
-  const sage = `hsl(150, ${Math.floor(22 * intensity)}%, ${Math.floor(22 + 8 * intensity)}%)`;
-  const green = 'hsl(120, 28%, 24%)';
-  const dimGreen = 'hsl(120, 25%, 18%)';
+  const pink = `hsl(335, ${Math.floor(42 * intensity)}%, ${Math.floor(24 + 14 * intensity)}%)`;
+  const mauve = `hsl(310, ${Math.floor(32 * intensity)}%, ${Math.floor(24 + 10 * intensity)}%)`;
 
-  canvas.style.background = `radial-gradient(ellipse at 50% 22%,
+  canvas.style.background = `radial-gradient(ellipse at 50% 19%,
     ${yellow} 0%,
-    ${gold} 5%,
-    ${coral} 12%,
-    ${rose} 20%,
-    ${pink} 28%,
-    ${mauve} 38%,
-    ${sage} 52%,
-    ${green} 68%,
-    ${dimGreen} 100%)`;
+    ${gold} 4%,
+    ${coral} 9%,
+    ${rose} 15%,
+    ${pink} 22%,
+    ${mauve} 30%,
+    hsl(150, 18%, 26%) 38%,
+    hsl(120, 30%, 25%) 45%,
+    hsl(120, 25%, 18%) 100%)`;
   canvas.style.webkitBackgroundClip = 'text';
   canvas.style.backgroundClip = 'text';
   canvas.style.webkitTextFillColor = 'transparent';
